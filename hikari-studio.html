@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hikari Studio — Sites web pour artisans & TPE</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a08;
+  --bg2: #111110;
+  --bg3: #1a1a17;
+  --surface: #1f1f1b;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text: #f2ede4;
+  --muted: #7a7670;
+  --muted2: #555250;
+  --accent: #c8a96e;
+  --accent-light: #e8cfa0;
+  --accent-dim: rgba(200,169,110,0.12);
+  --white: #f2ede4;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ── GRAIN OVERLAY ── */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:999; pointer-events:none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity: 0.4;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index: 100;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 24px 48px;
+  background: rgba(10,10,8,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 300; letter-spacing: 0.08em;
+  color: var(--text); text-decoration: none;
+}
+.nav-logo span { color: var(--accent); }
+.nav-links { display:flex; gap:36px; list-style:none; }
+.nav-links a {
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--muted); text-decoration:none; transition: color .2s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-cta {
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 10px 22px; border: 1px solid var(--accent);
+  color: var(--accent); background: transparent; cursor:pointer;
+  text-decoration:none; transition: all .2s;
+}
+.nav-cta:hover { background: var(--accent); color: var(--bg); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 48px 80px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg-line {
+  position: absolute; top:0; right: 18%; bottom:0; width:1px;
+  background: var(--border); z-index:0;
+}
+.hero-bg-line2 {
+  position: absolute; top:0; right: 36%; bottom:0; width:1px;
+  background: var(--border); z-index:0;
+}
+.hero-dot {
+  position: absolute; top: 38%; right: 18%;
+  width: 6px; height:6px; border-radius:50%;
+  background: var(--accent); z-index:1;
+  transform: translate(50%, -50%);
+  box-shadow: 0 0 20px rgba(200,169,110,0.5);
+  animation: pulse 3s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:translate(50%,-50%) scale(1)} 50%{opacity:.5;transform:translate(50%,-50%) scale(1.4)} }
+
+.hero-tag {
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 28px;
+  opacity:0; animation: fadeUp .8s .2s forwards;
+}
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(56px, 8vw, 110px);
+  font-weight: 300; line-height: 0.95;
+  letter-spacing: -0.01em;
+  max-width: 900px;
+  opacity:0; animation: fadeUp .9s .4s forwards;
+}
+.hero h1 em { font-style: italic; color: var(--accent); }
+.hero-sub {
+  margin-top: 40px; max-width: 440px;
+  font-size: 15px; color: var(--muted); line-height: 1.7; font-weight:400;
+  opacity:0; animation: fadeUp .9s .6s forwards;
+}
+.hero-actions {
+  margin-top: 48px; display:flex; align-items:center; gap:32px;
+  opacity:0; animation: fadeUp .9s .8s forwards;
+}
+.btn-primary {
+  display:inline-flex; align-items:center; gap:10px;
+  padding: 16px 36px; background: var(--accent); color: var(--bg);
+  font-family:'Syne',sans-serif; font-size:12px; font-weight:700;
+  letter-spacing:0.14em; text-transform:uppercase;
+  text-decoration:none; transition: all .25s;
+}
+.btn-primary:hover { background: var(--accent-light); }
+.btn-secondary {
+  font-size: 12px; letter-spacing:0.14em; text-transform:uppercase;
+  color: var(--muted); text-decoration:none; transition:color .2s;
+  display:flex; align-items:center; gap:8px;
+}
+.btn-secondary::after { content:'→'; transition: transform .2s; }
+.btn-secondary:hover { color: var(--text); }
+.btn-secondary:hover::after { transform: translateX(4px); }
+
+.hero-stats {
+  position: absolute; right: 48px; bottom: 80px;
+  display: flex; flex-direction:column; gap:28px; text-align:right;
+  opacity:0; animation: fadeUp .9s 1s forwards;
+}
+.hero-stat .num {
+  font-family:'Cormorant Garamond',serif; font-size:42px; font-weight:300;
+  color: var(--accent); line-height:1;
+}
+.hero-stat .lbl { font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(24px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+/* ── SECTION BASE ── */
+section { padding: 120px 48px; }
+.section-tag {
+  font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:20px;
+}
+.section-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size: clamp(36px,5vw,62px); font-weight:300; line-height:1.1;
+}
+.section-title em { font-style:italic; color:var(--accent); }
+
+/* ── ABOUT ── */
+.about { display:grid; grid-template-columns: 1fr 1fr; gap:80px; align-items:center; }
+.about-text p { font-size:16px; color:var(--muted); line-height:1.8; margin-bottom:20px; }
+.about-text p strong { color:var(--text); font-weight:500; }
+.about-visual {
+  position:relative; aspect-ratio:3/4; max-width:380px; margin-left:auto;
+}
+.about-visual-inner {
+  position:absolute; inset:0;
+  border:1px solid var(--border2);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+}
+.about-visual-grid {
+  position:absolute; inset:0;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.about-visual-text {
+  font-family:'Cormorant Garamond',serif;
+  font-size:80px; font-weight:300; color:var(--border2);
+  letter-spacing:-0.04em; line-height:1; text-align:center;
+}
+.about-visual-badge {
+  position:absolute; bottom:24px; right:-20px;
+  background:var(--accent); color:var(--bg);
+  padding:14px 18px; text-align:center;
+}
+.about-visual-badge .bnum {
+  font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:600; line-height:1;
+}
+.about-visual-badge .blbl { font-size:9px; letter-spacing:.12em; text-transform:uppercase; margin-top:2px; }
+
+/* ── SERVICES ── */
+.services-grid {
+  display:grid; grid-template-columns: repeat(3,1fr); gap:1px;
+  border:1px solid var(--border); margin-top:60px;
+  background:var(--border);
+}
+.service-card {
+  background:var(--bg); padding:40px 36px;
+  transition: background .2s;
+  cursor: default;
+}
+.service-card:hover { background:var(--bg3); }
+.service-num {
+  font-family:'Cormorant Garamond',serif; font-size:48px; font-weight:300;
+  color:var(--border2); line-height:1; margin-bottom:24px;
+}
+.service-card h3 {
+  font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  margin-bottom:16px; color:var(--text);
+}
+.service-card p { font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:20px; }
+.service-tags { display:flex; flex-wrap:wrap; gap:6px; }
+.stag {
+  font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+  padding:4px 10px; border:1px solid var(--border2); color:var(--muted);
+}
+
+/* ── OFFRES ── */
+.offers { background: var(--bg2); }
+.offers-intro { max-width:560px; margin-bottom:64px; }
+.offers-intro p { font-size:16px; color:var(--muted); line-height:1.7; margin-top:16px; }
+.offers-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+
+.offer-card {
+  background:var(--bg); border:1px solid var(--border2);
+  padding:40px 36px; position:relative; transition: border-color .2s;
+}
+.offer-card:hover { border-color: var(--accent); }
+.offer-card.featured {
+  border-color: var(--accent);
+  background:var(--bg3);
+}
+.offer-badge {
+  position:absolute; top:-1px; left:50%; transform:translateX(-50%);
+  background:var(--accent); color:var(--bg);
+  font-size:9px; letter-spacing:.16em; text-transform:uppercase;
+  padding:5px 14px; white-space:nowrap;
+}
+.offer-name {
+  font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:16px;
+}
+.offer-price {
+  font-family:'Cormorant Garamond',serif;
+  font-size:52px; font-weight:300; line-height:1; color:var(--text);
+  margin-bottom:4px;
+}
+.offer-price span { font-size:22px; color:var(--muted); }
+.offer-delay {
+  font-size:12px; color:var(--accent); margin-bottom:32px;
+  letter-spacing:.04em;
+}
+.offer-divider { height:1px; background:var(--border); margin-bottom:28px; }
+.offer-features { list-style:none; display:flex; flex-direction:column; gap:12px; margin-bottom:36px; }
+.offer-features li {
+  display:flex; gap:10px; font-size:13px; color:var(--muted); line-height:1.5;
+}
+.offer-features li::before {
+  content:''; width:5px; height:5px; border-radius:50%;
+  background:var(--accent); flex-shrink:0; margin-top:7px;
+}
+.offer-features li.off { color:var(--muted2); }
+.offer-features li.off::before { background:var(--muted2); }
+.offer-cta {
+  display:block; text-align:center; padding:14px;
+  border:1px solid var(--border2); color:var(--muted);
+  font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  text-decoration:none; transition:all .2s;
+}
+.offer-cta:hover { border-color:var(--accent); color:var(--accent); }
+.offer-card.featured .offer-cta {
+  background:var(--accent); border-color:var(--accent); color:var(--bg);
+}
+.offer-card.featured .offer-cta:hover { background:var(--accent-light); border-color:var(--accent-light); }
+
+/* ── PROCESS ── */
+.process-steps {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:0;
+  margin-top:60px; border:1px solid var(--border);
+  background:var(--border);
+}
+.process-step {
+  background:var(--bg); padding:36px 28px;
+  position:relative;
+}
+.ps-num {
+  font-family:'Cormorant Garamond',serif; font-size:64px; font-weight:300;
+  color:var(--border2); line-height:1; margin-bottom:20px;
+}
+.ps-title { font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin-bottom:12px; }
+.ps-desc { font-size:13px; color:var(--muted); line-height:1.6; }
+.ps-tag {
+  display:inline-block; margin-top:16px;
+  font-size:9px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent); border:1px solid rgba(200,169,110,.3); padding:3px 8px;
+}
+
+/* ── FAQ ── */
+.faq { background:var(--bg2); }
+.faq-list { margin-top:56px; max-width:720px; }
+.faq-item { border-bottom:1px solid var(--border); }
+.faq-q {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:24px 0; cursor:pointer; gap:20px;
+}
+.faq-q span { font-size:15px; font-weight:500; }
+.faq-icon {
+  width:28px; height:28px; border:1px solid var(--border2);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; font-size:16px; color:var(--muted);
+  transition: all .2s;
+}
+.faq-item.open .faq-icon { border-color:var(--accent); color:var(--accent); transform:rotate(45deg); }
+.faq-a { display:none; padding-bottom:24px; font-size:14px; color:var(--muted); line-height:1.75; }
+.faq-item.open .faq-a { display:block; }
+
+/* ── CONTACT ── */
+.contact-wrap { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+.contact-info { }
+.contact-info .section-title { margin-bottom:24px; }
+.contact-info p { font-size:15px; color:var(--muted); line-height:1.8; margin-bottom:40px; }
+.contact-detail {
+  display:flex; flex-direction:column; gap:16px;
+}
+.cd-item {
+  display:flex; gap:16px; align-items:center;
+}
+.cd-icon {
+  width:40px; height:40px; border:1px solid var(--border2);
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; color:var(--accent); flex-shrink:0;
+}
+.cd-item a { font-size:14px; color:var(--muted); text-decoration:none; transition:color .2s; }
+.cd-item a:hover { color:var(--text); }
+
+.contact-form { display:flex; flex-direction:column; gap:16px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.form-group { display:flex; flex-direction:column; gap:8px; }
+.form-group label { font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); }
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background:var(--bg3); border:1px solid var(--border2); color:var(--text);
+  padding:14px 16px; font-family:'Syne',sans-serif; font-size:14px;
+  outline:none; transition:border-color .2s; resize:none;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-color:var(--accent); }
+.form-group select option { background:var(--bg3); }
+.form-submit {
+  padding:16px 36px; background:var(--accent); color:var(--bg);
+  font-family:'Syne',sans-serif; font-size:12px; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase; border:none; cursor:pointer;
+  transition:background .2s; align-self:flex-start; margin-top:8px;
+}
+.form-submit:hover { background:var(--accent-light); }
+
+/* ── FOOTER ── */
+footer {
+  border-top:1px solid var(--border);
+  padding:40px 48px;
+  display:flex; justify-content:space-between; align-items:center;
+  flex-wrap:wrap; gap:20px;
+}
+.footer-logo {
+  font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:300;
+  letter-spacing:.08em; color:var(--muted);
+}
+.footer-logo span { color:var(--accent); }
+.footer-links { display:flex; gap:28px; }
+.footer-links a {
+  font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--muted2); text-decoration:none; transition:color .2s;
+}
+.footer-links a:hover { color:var(--text); }
+.footer-copy { font-size:11px; color:var(--muted2); }
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity:0; transform:translateY(32px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  nav { padding:20px 24px; }
+  .nav-links { display:none; }
+  .hero { padding:0 24px 60px; }
+  .hero-stats { display:none; }
+  section { padding:80px 24px; }
+  .about { grid-template-columns:1fr; }
+  .about-visual { display:none; }
+  .services-grid { grid-template-columns:1fr; }
+  .offers-grid { grid-template-columns:1fr; }
+  .process-steps { grid-template-columns:1fr 1fr; }
+  .contact-wrap { grid-template-columns:1fr; }
+  footer { flex-direction:column; text-align:center; padding:32px 24px; }
+  .form-row { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">Hikari<span>.</span>Studio</a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#offres">Offres</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <a class="nav-cta" href="#contact">Démarrer un projet</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-line"></div>
+  <div class="hero-bg-line2"></div>
+  <div class="hero-dot"></div>
+
+  <p class="hero-tag">Designer web · Sites livrés en 7 jours</p>
+  <h1>Votre site web,<br><em>livré en une semaine.</em><br>Clé en main.</h1>
+  <p class="hero-sub">Je crée des sites professionnels pour artisans, commerçants et TPE qui veulent attirer plus de clients — sans s'occuper de la technique.</p>
+  <div class="hero-actions">
+    <a href="#contact" class="btn-primary">Réserver un appel gratuit</a>
+    <a href="#offres" class="btn-secondary">Voir les offres</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num">7j</div><div class="lbl">délai garanti</div></div>
+    <div class="hero-stat"><div class="num">100%</div><div class="lbl">clé en main</div></div>
+    <div class="hero-stat"><div class="num">0</div><div class="lbl">technicité requise</div></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about reveal">
+    <div class="about-text">
+      <p class="section-tag">À propos</p>
+      <h2 class="section-title">Un studio dédié aux<br><em>petites entreprises</em></h2>
+      <br>
+      <p>Hikari Studio, c'est <strong>un designer web freelance</strong> qui utilise les meilleurs outils IA pour créer des sites professionnels à des tarifs accessibles — là où une agence facturerait 5 à 10 fois plus cher.</p>
+      <p>Mon approche : <strong>comprendre votre métier</strong>, votre clientèle, vos objectifs — puis livrer un site qui convertit des visiteurs en vrais clients, en moins d'une semaine.</p>
+      <p>Pas de jargon technique, pas de délais à rallonge. Juste un site qui fonctionne, que vous pouvez montrer fièrement.</p>
+    </div>
+    <div class="about-visual">
+      <div class="about-visual-inner">
+        <div class="about-visual-grid"></div>
+        <div class="about-visual-text">光</div>
+      </div>
+      <div class="about-visual-badge">
+        <div class="bnum">7j</div>
+        <div class="blbl">Livraison</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" style="background:var(--bg2)">
+  <div class="reveal">
+    <p class="section-tag">Ce que je fais</p>
+    <h2 class="section-title">Des services pensés<br>pour <em>votre croissance</em></h2>
+  </div>
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <div class="service-num">01</div>
+      <h3>Création de site</h3>
+      <p>Un site vitrine professionnel, rapide, optimisé mobile — conçu pour convertir vos visiteurs en clients.</p>
+      <div class="service-tags">
+        <span class="stag">Design sur mesure</span>
+        <span class="stag">Responsive</span>
+        <span class="stag">SEO inclus</span>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="service-num">02</div>
+      <h3>Refonte de site</h3>
+      <p>Votre site est vieillissant ou ne génère pas assez de contacts ? Je le modernise sans perdre votre référencement.</p>
+      <div class="service-tags">
+        <span class="stag">Modernisation</span>
+        <span class="stag">Performance</span>
+        <span class="stag">Migration</span>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="service-num">03</div>
+      <h3>Maintenance & suivi</h3>
+      <p>Je m'occupe de tout : mises à jour, modifications de contenu, hébergement, sauvegarde. Vous ne touchez à rien.</p>
+      <div class="service-tags">
+        <span class="stag">Mises à jour</span>
+        <span class="stag">Hébergement</span>
+        <span class="stag">Support</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OFFRES -->
+<section id="offres">
+  <div class="offers-intro reveal">
+    <p class="section-tag">Tarifs transparents</p>
+    <h2 class="section-title">Des offres <em>claires,</em><br>sans surprise</h2>
+    <p>Pas de devis interminable, pas de coûts cachés. Vous savez exactement ce que vous obtenez, pour combien, et en combien de temps.</p>
+  </div>
+  <div class="offers-grid reveal">
+
+    <div class="offer-card">
+      <div class="offer-name">Essentiel</div>
+      <div class="offer-price">690<span> €</span></div>
+      <div class="offer-delay">Livré en 5 jours</div>
+      <div class="offer-divider"></div>
+      <ul class="offer-features">
+        <li>Site 3 pages (accueil, services, contact)</li>
+        <li>Design professionnel sur mesure</li>
+        <li>Optimisé mobile & tablette</li>
+        <li>Formulaire de contact</li>
+        <li>Hébergement 1 an inclus</li>
+        <li>2 révisions incluses</li>
+        <li class="off">Blog / actualités</li>
+        <li class="off">Galerie réalisations</li>
+      </ul>
+      <a href="#contact" class="offer-cta">Choisir cette offre</a>
+    </div>
+
+    <div class="offer-card featured">
+      <div class="offer-badge">Le plus populaire</div>
+      <div class="offer-name">Professionnel</div>
+      <div class="offer-price">990<span> €</span></div>
+      <div class="offer-delay">Livré en 7 jours</div>
+      <div class="offer-divider"></div>
+      <ul class="offer-features">
+        <li>Site 5 pages complet</li>
+        <li>Design premium sur mesure</li>
+        <li>Optimisé mobile & tablette</li>
+        <li>Formulaire de contact & devis</li>
+        <li>Hébergement 1 an inclus</li>
+        <li>SEO on-page optimisé</li>
+        <li>Galerie réalisations / photos</li>
+        <li>3 révisions incluses</li>
+      </ul>
+      <a href="#contact" class="offer-cta">Choisir cette offre</a>
+    </div>
+
+    <div class="offer-card">
+      <div class="offer-name">Premium</div>
+      <div class="offer-price">1490<span> €</span></div>
+      <div class="offer-delay">Livré en 10 jours</div>
+      <div class="offer-divider"></div>
+      <ul class="offer-features">
+        <li>Site jusqu'à 8 pages</li>
+        <li>Design haut de gamme animé</li>
+        <li>Optimisé mobile & tablette</li>
+        <li>Formulaires avancés</li>
+        <li>Hébergement 1 an inclus</li>
+        <li>SEO technique complet</li>
+        <li>Blog / section actualités</li>
+        <li>Révisions illimitées (30j)</li>
+      </ul>
+      <a href="#contact" class="offer-cta">Choisir cette offre</a>
+    </div>
+
+  </div>
+
+  <!-- Maintenance add-on -->
+  <div class="reveal" style="margin-top:32px; padding:32px 36px; border:1px solid var(--border2); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
+    <div>
+      <p style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;">Option — Maintenance mensuelle</p>
+      <p style="font-size:16px;font-weight:500;">Zéro souci, on s'occupe de tout</p>
+      <p style="font-size:13px;color:var(--muted);margin-top:6px;">Mises à jour · Modifications textes & photos · Hébergement · Sauvegarde · Support prioritaire</p>
+    </div>
+    <div style="text-align:right; flex-shrink:0;">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--accent);line-height:1;">99 <span style="font-size:18px;color:var(--muted);">€/mois</span></div>
+      <a href="#contact" style="display:inline-block;margin-top:10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;border-bottom:1px solid var(--border2);padding-bottom:2px;">Ajouter à mon offre →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process" style="background:var(--bg2)">
+  <div class="reveal">
+    <p class="section-tag">Comment ça se passe</p>
+    <h2 class="section-title">4 étapes pour<br><em>votre site en ligne</em></h2>
+  </div>
+  <div class="process-steps reveal">
+    <div class="process-step">
+      <div class="ps-num">01</div>
+      <div class="ps-title">Appel découverte</div>
+      <p class="ps-desc">20 min pour comprendre votre activité, vos clients cibles et vos objectifs. Gratuit, sans engagement.</p>
+      <span class="ps-tag">Jour 1</span>
+    </div>
+    <div class="process-step">
+      <div class="ps-num">02</div>
+      <div class="ps-title">Brief & validation</div>
+      <p class="ps-desc">Je prépare la structure du site et les textes. Vous validez avant que je commence le design.</p>
+      <span class="ps-tag">Jour 2</span>
+    </div>
+    <div class="process-step">
+      <div class="ps-num">03</div>
+      <div class="ps-title">Design & développement</div>
+      <p class="ps-desc">Je crée votre site de A à Z. Vous recevez un lien de prévisualisation pour suivre l'avancement.</p>
+      <span class="ps-tag">Jours 3–6</span>
+    </div>
+    <div class="process-step">
+      <div class="ps-num">04</div>
+      <div class="ps-title">Livraison & mise en ligne</div>
+      <p class="ps-desc">Après vos retours et ajustements, le site est mis en ligne sur votre domaine. C'est tout.</p>
+      <span class="ps-tag">Jour 7</span>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="faq">
+  <div class="reveal">
+    <p class="section-tag">Questions fréquentes</p>
+    <h2 class="section-title">Tout ce que vous<br><em>voulez savoir</em></h2>
+  </div>
+  <div class="faq-list reveal">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Est-ce que je dois m'occuper de la technique ?</span>
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a">Non, absolument pas. Je gère l'hébergement, le nom de domaine, les mises à jour et la sécurité. Vous n'avez qu'à me communiquer vos textes et photos — le reste, c'est mon travail.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Et si je n'ai pas de photos professionnelles ?</span>
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a">Pas de problème. J'utilise des banques d'images haute qualité (Unsplash, Pexels) adaptées à votre secteur. Si vous souhaitez des photos personnalisées de votre activité, je peux vous recommander un photographe local.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Je peux modifier mon site moi-même après livraison ?</span>
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a">Oui. Je vous livre avec un accès à l'interface d'édition, simple comme modifier un document Word. Et si vous préférez ne pas y toucher, l'option maintenance mensuelle à 99 €/mois couvre toutes les modifications à votre place.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Comment se passe le paiement ?</span>
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a">50% d'acompte à la signature pour démarrer le projet, 50% à la livraison. Paiement par virement bancaire ou carte. Facture fournie pour tous vos achats professionnels.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Que se passe-t-il après la garantie d'hébergement d'un an ?</span>
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a">Vous pouvez soit renouveler l'hébergement seul (environ 15 €/mois), soit souscrire à l'option maintenance mensuelle qui inclut tout. Je vous contacte 2 mois avant l'échéance pour ne pas vous laisser dans le vide.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Proposez-vous des consultations gratuites ?</span>
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a">Oui. L'appel découverte de 20 minutes est entièrement gratuit et sans engagement. C'est l'occasion d'évaluer ensemble si mon offre correspond à vos besoins, sans aucune pression.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-wrap">
+    <div class="contact-info reveal">
+      <p class="section-tag">Contact</p>
+      <h2 class="section-title">Parlons de<br><em>votre projet</em></h2>
+      <p>Remplissez le formulaire ou contactez-moi directement. Je réponds sous 24h.</p>
+      <div class="contact-detail">
+        <div class="cd-item">
+          <div class="cd-icon">@</div>
+          <a href="mailto:contact.hikaristudio@gmail.com">contact.hikaristudio@gmail.com</a>
+        </div>
+        <div class="cd-item">
+          <div class="cd-icon">in</div>
+          <a href="https://www.instagram.com/__hikaristudio/" target="_blank">@__hikaristudio</a>
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <form class="contact-form" onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Prénom *</label>
+            <input type="text" placeholder="Jean" required>
+          </div>
+          <div class="form-group">
+            <label>Nom *</label>
+            <input type="text" placeholder="Dupont" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" placeholder="jean@monentreprise.fr" required>
+        </div>
+        <div class="form-group">
+          <label>Votre secteur d'activité</label>
+          <select>
+            <option value="">Choisir...</option>
+            <option>Artisan / BTP</option>
+            <option>Restauration / Alimentaire</option>
+            <option>Commerce local</option>
+            <option>Profession libérale</option>
+            <option>Beauté / Bien-être</option>
+            <option>Autre</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Offre qui vous intéresse</label>
+          <select>
+            <option value="">Choisir...</option>
+            <option>Essentiel — 690 €</option>
+            <option>Professionnel — 990 €</option>
+            <option>Premium — 1490 €</option>
+            <option>Je ne sais pas encore</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Votre message</label>
+          <textarea rows="4" placeholder="Décrivez votre projet en quelques mots..."></textarea>
+        </div>
+        <button type="submit" class="form-submit">Envoyer le message →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Hikari<span>.</span>Studio</div>
+  <div class="footer-links">
+    <a href="#services">Services</a>
+    <a href="#offres">Offres</a>
+    <a href="#contact">Contact</a>
+    <a href="https://docs.google.com/document/d/1e3xNC1gNl3UBkP0w3RWMyQnP6gh5CYDJG-MQIZ42Q04/edit" target="_blank">Mentions légales</a>
+  </div>
+  <p class="footer-copy">© 2025 Hikari Studio</p>
+</footer>
+
+<script>
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+function handleSubmit(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.form-submit');
+  btn.textContent = 'Message envoyé ✓';
+  btn.style.background = '#1D9E75';
+  setTimeout(() => { btn.textContent = 'Envoyer le message →'; btn.style.background = ''; }, 3000);
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
